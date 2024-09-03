@@ -1,3 +1,9 @@
+import Tiptap from "@/components/Tiptap";
+
 export default function Home() {
-  return <main>Hello World!</main>;
+  return (
+    <main className="h-screen p-8">
+      <Tiptap />
+    </main>
+  );
 }
