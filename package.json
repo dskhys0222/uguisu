@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "biome check ."
+    "lint": "biome check .",
+    "fix": "biome check --write ."
   },
   "dependencies": {
     "@tiptap/pm": "^2.6.6",
