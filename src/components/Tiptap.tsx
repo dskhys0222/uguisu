@@ -1,18 +1,9 @@
 "use client";
 
-import { type Editor, EditorContent, useEditor } from "@tiptap/react";
+import { load, save } from "@/utils/repository";
+import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useRef } from "react";
-
-const load = (editor: Editor) => {
-  const content = JSON.parse(localStorage.getItem("content") ?? '""');
-  editor.commands.setContent(content);
-};
-
-const save = (editor: Editor) => {
-  const content = JSON.stringify(editor.getJSON());
-  localStorage.setItem("content", content);
-};
 
 const Tiptap = () => {
   const ref = useRef<HTMLDivElement>(null);
