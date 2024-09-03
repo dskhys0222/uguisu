@@ -1,4 +1,4 @@
-import type { Editor } from "@tiptap/react";
+import type { Editor, JSONContent } from "@tiptap/react";
 
 const dbName = "content_db";
 const dbVersion = 1;
@@ -42,6 +42,24 @@ export const load = async (editor: Editor) => {
   };
 };
 
+const getText = (content: JSONContent | undefined) => {
+  return (
+    content?.content
+      ?.map((node) => {
+        if (node.type === "text") {
+          return node.text;
+        }
+
+        if (node.type === "hard_break") {
+          return "\n";
+        }
+
+        return "";
+      })
+      .join("") ?? ""
+  );
+};
+
 export const save = async (editor: Editor) => {
   const content = editor.getJSON();
   const db = await open();
@@ -49,7 +67,11 @@ export const save = async (editor: Editor) => {
   try {
     const transaction = db.transaction(storeName, "readwrite");
     const store = transaction.objectStore(storeName);
-    store.put({ key: tmpKey, content });
+    store.put({
+      key: tmpKey,
+      title: getText(content.content?.at(0)),
+      updateAt: new Date(),
+    });
   } catch (e) {
     console.error("Failed to save content", e);
     throw e;
