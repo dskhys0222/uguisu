@@ -4,6 +4,7 @@ import { load, save } from "@/utils/indexedDb";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useRef } from "react";
+import styles from "./styles.module.css";
 
 const RichTextEditor = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -25,12 +26,14 @@ const RichTextEditor = () => {
   };
 
   return (
-    <EditorContent
-      className="h-full [&>[contenteditable=true]:focus-visible]:outline-none"
-      editor={editor}
-      ref={ref}
-      onClick={focus}
-    />
+    <div className={`${styles.container} h-full`}>
+      <EditorContent
+        className="h-full [&>[contenteditable=true]:focus-visible]:outline-none"
+        editor={editor}
+        ref={ref}
+        onClick={focus}
+      />
+    </div>
   );
 };
 
