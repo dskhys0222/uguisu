@@ -4,15 +4,15 @@ export default function ItemList(props: ItemListProps) {
   const { className, items, onSelect } = props;
 
   const sortedItems = items.sort(
-    (a, b) => a.updatedAt.valueOf() - b.updatedAt.valueOf(),
+    (a, b) => b.updatedAt.valueOf() - a.updatedAt.valueOf(),
   );
 
   return (
-    <ol className={className}>
+    <ol className={`${className}`}>
       {sortedItems.map((item) => (
         <li
           key={item.key}
-          className="curosr-pointer truncate"
+          className="cursor-pointer truncate border-b p-3 hover:bg-gray-100"
           onClick={() => {
             onSelect?.(item.key);
           }}

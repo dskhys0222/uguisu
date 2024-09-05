@@ -36,7 +36,7 @@ export default function Home() {
 
   return (
     <div className="flex h-screen">
-      <nav className="w-60 flex-shrink-0">
+      <nav className="w-60 flex-shrink-0 border-r-2">
         <ItemList items={items} onSelect={setSelectedItemKey} />
       </nav>
       <main className="h-full max-w-[calc(100%-15rem)] flex-grow">

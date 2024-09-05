@@ -8,24 +8,25 @@ export default function MenuBar(props: MenuBarProps) {
     editor?.chain().focus().toggleBold().run();
   };
 
+  const toggleItalic = () => {
+    editor?.chain().focus().toggleItalic().run();
+  };
+
+  const toggleStrike = () => {
+    editor?.chain().focus().toggleStrike().run();
+  };
+
   return (
-    <div
-      className={`flex items-center border-2 [&>button]:border-r-2 ${className}`}
-    >
-      <MenuButton onClick={toggleBold}>B</MenuButton>
-      <MenuButton onClick={toggleBold}>B</MenuButton>
-      <MenuButton onClick={toggleBold}>B</MenuButton>
-      <MenuButton onClick={toggleBold}>B</MenuButton>
-      <MenuButton onClick={toggleBold}>B</MenuButton>
-      <MenuButton onClick={toggleBold}>B</MenuButton>
-      <MenuButton onClick={toggleBold}>B</MenuButton>
-      <MenuButton onClick={toggleBold}>B</MenuButton>
-      <MenuButton onClick={toggleBold}>B</MenuButton>
-      <MenuButton onClick={toggleBold}>B</MenuButton>
-      <MenuButton onClick={toggleBold}>B</MenuButton>
-      <MenuButton onClick={toggleBold}>B</MenuButton>
-      <MenuButton onClick={toggleBold}>B</MenuButton>
-      <MenuButton onClick={toggleBold}>B</MenuButton>
+    <div className={`flex items-center border-b-2 ${className}`}>
+      <MenuButton onClick={toggleBold}>
+        <strong>B</strong>
+      </MenuButton>
+      <MenuButton onClick={toggleItalic}>
+        <em>I</em>
+      </MenuButton>
+      <MenuButton onClick={toggleStrike}>
+        <s>S</s>
+      </MenuButton>
     </div>
   );
 }
