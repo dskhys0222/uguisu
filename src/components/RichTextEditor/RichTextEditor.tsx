@@ -5,7 +5,7 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useRef } from "react";
 
-const Tiptap = () => {
+const RichTextEditor = () => {
   const ref = useRef<HTMLDivElement>(null);
   const editor = useEditor({
     extensions: [StarterKit],
@@ -34,4 +34,4 @@ const Tiptap = () => {
   );
 };
 
-export default Tiptap;
+export default RichTextEditor;
