@@ -1,10 +1,10 @@
-import type { Editor, JSONContent } from "@tiptap/react";
+import type { Item, ItemSummary } from "@/types";
+import type { JSONContent } from "@tiptap/react";
+import { getTitle } from "./jsonContent";
 
 const dbName = "content_db";
 const dbVersion = 1;
 const storeName = "content_store";
-
-const tmpKey = "default";
 
 const open = () => {
   return new Promise<IDBDatabase>((resolve, reject) => {
@@ -25,57 +25,74 @@ const open = () => {
   });
 };
 
-export const load = async (editor: Editor) => {
+export const loadAllSummary = async (): Promise<ItemSummary[]> => {
   const db = await open();
   const transaction = db.transaction(storeName, "readonly");
   const store = transaction.objectStore(storeName);
-  const request = store.get(tmpKey);
+  const request = store.getAll();
 
-  request.onsuccess = () => {
-    const { content } = request.result;
-    editor.commands.setContent(content);
-    db.close();
-  };
+  return new Promise((resolve, reject) => {
+    request.onsuccess = () => {
+      const items: Item[] | undefined = request.result as Item[] | undefined;
+      const summaries: ItemSummary[] =
+        items?.map(({ content, ...summary }) => summary) ?? [];
+      db.close();
+      resolve(summaries);
+    };
 
-  request.onerror = () => {
-    db.close();
-  };
+    request.onerror = () => {
+      db.close();
+      reject(request.error);
+    };
+  });
 };
 
-const getText = (content: JSONContent | undefined) => {
-  return (
-    content?.content
-      ?.map((node) => {
-        if (node.type === "text") {
-          return node.text;
-        }
-
-        if (node.type === "hard_break") {
-          return "\n";
-        }
-
-        return "";
-      })
-      .join("") ?? ""
-  );
-};
-
-export const save = async (editor: Editor) => {
-  const content = editor.getJSON();
+export const loadItem = async (
+  key: string,
+): Promise<JSONContent | undefined> => {
   const db = await open();
+  const transaction = db.transaction(storeName, "readonly");
+  const store = transaction.objectStore(storeName);
+  const request = store.get(key);
 
-  try {
-    const transaction = db.transaction(storeName, "readwrite");
-    const store = transaction.objectStore(storeName);
-    store.put({
-      key: tmpKey,
-      title: getText(content.content?.at(0)),
-      updateAt: new Date(),
-    });
-  } catch (e) {
-    console.error("Failed to save content", e);
-    throw e;
-  } finally {
-    db.close();
-  }
+  return new Promise((resolve, reject) => {
+    request.onsuccess = () => {
+      const content = request.result?.content;
+      db.close();
+      resolve(content);
+    };
+
+    request.onerror = () => {
+      db.close();
+      reject();
+    };
+  });
+};
+
+export const saveItem = async (
+  key: string,
+  content: JSONContent,
+): Promise<void> => {
+  const db = await open();
+  const transaction = db.transaction(storeName, "readwrite");
+  const store = transaction.objectStore(storeName);
+  const item: Item = {
+    key,
+    content,
+    title: getTitle(content),
+    updatedAt: new Date(),
+  };
+  const request = store.put(item);
+
+  return new Promise((resolve, reject) => {
+    request.onsuccess = () => {
+      db.close();
+      resolve();
+    };
+
+    request.onerror = () => {
+      db.close();
+      reject();
+    };
+  });
 };
