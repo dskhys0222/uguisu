@@ -1,6 +1,6 @@
 "use client";
 
-import { load, save } from "@/utils/repository";
+import { load, save } from "@/utils/indexedDb";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useRef } from "react";
