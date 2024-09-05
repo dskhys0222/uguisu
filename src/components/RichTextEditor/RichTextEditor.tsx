@@ -1,40 +1,53 @@
 "use client";
 
-import { load, save } from "@/utils/indexedDb";
-import { EditorContent, useEditor } from "@tiptap/react";
+import { loadItem, saveItem } from "@/utils/indexedDb";
+import { type Editor, EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useRef } from "react";
+import { useEffect } from "react";
+import MenuBar from "./MenuBar/MenuBar";
 import styles from "./styles.module.css";
+import type { RichTextEditorProps } from "./types";
 
-const RichTextEditor = () => {
-  const ref = useRef<HTMLDivElement>(null);
+const load = async (editor: Editor, key: string) => {
+  const content = await loadItem(key);
+  editor
+    .chain()
+    .focus()
+    .setContent(content ?? "")
+    .run();
+};
+
+export default function RichTextEditor(props: RichTextEditorProps) {
+  const { itemKey, onChange } = props;
+
   const editor = useEditor({
     extensions: [StarterKit],
     autofocus: true,
-    onCreate: ({ editor }) => {
-      load(editor);
+    onCreate: async ({ editor }) => {
+      await load(editor, itemKey);
     },
-    onUpdate: ({ editor }) => {
-      save(editor);
+    onUpdate: async ({ editor }) => {
+      await saveItem(itemKey, editor.getJSON());
+      onChange?.();
     },
   });
 
-  const focus = () => {
-    ref.current
-      ?.querySelector<HTMLDivElement>("[contenteditable=true]")
-      ?.focus();
-  };
+  useEffect(() => {
+    if (editor == null) {
+      return;
+    }
+
+    load(editor, itemKey);
+  }, [editor, itemKey]);
 
   return (
     <div className={`${styles.container} h-full`}>
+      <MenuBar className="h-8" editor={editor} />
       <EditorContent
-        className="h-full [&>[contenteditable=true]:focus-visible]:outline-none"
+        className="h-[calc(100%-2rem)] overflow-y-auto p-8 [scrollbar-gutter:stable_both-edges] hover:cursor-text [&>[contenteditable=true]:focus-visible]:outline-none"
         editor={editor}
-        ref={ref}
-        onClick={focus}
+        onClick={() => editor?.commands.focus()}
       />
     </div>
   );
-};
-
-export default RichTextEditor;
+}
