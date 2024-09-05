@@ -4,7 +4,7 @@ import FloatingButton from "@/components/FloatingButton/FloatingButton";
 import ItemList from "@/components/ItemList/ItemList";
 import RichTextEditor from "@/components/RichTextEditor/RichTextEditor";
 import type { ItemSummary } from "@/types";
-import { loadAllSummary } from "@/utils/indexedDb";
+import { loadAllSummary, moveToTrash } from "@/utils/indexedDb";
 import { generateUuid } from "@/utils/uuid";
 import { useEffect, useState } from "react";
 
@@ -37,13 +37,27 @@ export default function Home() {
     }
   };
 
+  const onRemove = async () => {
+    await moveToTrash(selectedItemKey);
+    const items = await reloadItems();
+    if (items.length > 0) {
+      setSelectedItemKey(items[0].key);
+    } else {
+      createNewItem();
+    }
+  };
+
   return (
     <div className="flex h-screen">
       <nav className="w-60 flex-shrink-0 border-r-2">
         <ItemList items={items} onSelect={setSelectedItemKey} />
       </nav>
       <main className="h-full max-w-[calc(100%-15rem)] flex-grow">
-        <RichTextEditor itemKey={selectedItemKey} onChange={reloadItems} />
+        <RichTextEditor
+          itemKey={selectedItemKey}
+          onChange={reloadItems}
+          onRemove={onRemove}
+        />
       </main>
       <FloatingButton onClick={createNewItem}>+</FloatingButton>
     </div>

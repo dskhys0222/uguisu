@@ -6,7 +6,7 @@ export default function MenuButton(props: MenuButtonProps) {
   return (
     <button
       type="button"
-      className="h-full w-10 hover:bg-gray-100"
+      className="flex h-full w-10 items-center justify-center hover:bg-gray-100"
       onClick={onClick}
     >
       {children}

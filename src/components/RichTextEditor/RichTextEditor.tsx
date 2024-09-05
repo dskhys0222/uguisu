@@ -31,7 +31,7 @@ import {
 } from "@tiptap/react";
 import { common, createLowlight } from "lowlight";
 import { useEffect, useState } from "react";
-import MenuBar from "./MenuBar/MenuBar";
+import MenuBar from "../MenuBar/MenuBar";
 import styles from "./styles.module.scss";
 import type { RichTextEditorProps } from "./types";
 import useDebounce from "@/hooks/useDebounce";
@@ -90,7 +90,7 @@ const load = async (editor: Editor, key: string) => {
 };
 
 export default function RichTextEditor(props: RichTextEditorProps) {
-  const { itemKey, onChange } = props;
+  const { itemKey, onChange, onRemove } = props;
 
   const [content, setContent] = useState<JSONContent>();
   useDebounce(
@@ -127,9 +127,9 @@ export default function RichTextEditor(props: RichTextEditorProps) {
 
   return (
     <div className={`${styles.container} h-full`}>
-      <MenuBar className="h-8" editor={editor} />
+      <MenuBar className="h-12" editor={editor} onRemove={onRemove} />
       <EditorContent
-        className="h-[calc(100%-2rem)] overflow-y-auto p-8 [scrollbar-gutter:stable_both-edges] hover:cursor-text [&>[contenteditable=true]:focus-visible]:outline-none"
+        className="h-[calc(100%-3rem)] overflow-y-auto p-8 [scrollbar-gutter:stable_both-edges] hover:cursor-text [&>[contenteditable=true]:focus-visible]:outline-none"
         editor={editor}
         onClick={() => editor?.commands.focus()}
       />
