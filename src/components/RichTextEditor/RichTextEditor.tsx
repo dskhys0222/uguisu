@@ -23,12 +23,18 @@ import TableRow from "@tiptap/extension-table-row";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
 import Text from "@tiptap/extension-text";
-import { type Editor, EditorContent, useEditor } from "@tiptap/react";
+import {
+  type Editor,
+  EditorContent,
+  type JSONContent,
+  useEditor,
+} from "@tiptap/react";
 import { common, createLowlight } from "lowlight";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import MenuBar from "./MenuBar/MenuBar";
 import styles from "./styles.module.scss";
 import type { RichTextEditorProps } from "./types";
+import useDebounce from "@/hooks/useDebounce";
 
 const grammers = {
   ...common,
@@ -86,15 +92,28 @@ const load = async (editor: Editor, key: string) => {
 export default function RichTextEditor(props: RichTextEditorProps) {
   const { itemKey, onChange } = props;
 
+  const [content, setContent] = useState<JSONContent>();
+  useDebounce(
+    async () => {
+      if (content == null) {
+        return;
+      }
+
+      await saveItem(itemKey, content);
+      onChange?.();
+    },
+    1000,
+    [content],
+  );
+
   const editor = useEditor({
     extensions,
     autofocus: true,
     onCreate: async ({ editor }) => {
       await load(editor, itemKey);
     },
-    onUpdate: async ({ editor }) => {
-      await saveItem(itemKey, editor.getJSON());
-      onChange?.();
+    onUpdate: ({ editor }) => {
+      setContent(editor.getJSON());
     },
   });
 
