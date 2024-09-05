@@ -18,8 +18,11 @@ export default function Home() {
 
   const reloadItems = async (): Promise<ItemSummary[]> => {
     const items = await loadAllSummary();
-    setItems(items);
-    return items;
+    const sortedItems = items.sort(
+      (a, b) => b.updatedAt.valueOf() - a.updatedAt.valueOf(),
+    );
+    setItems(sortedItems);
+    return sortedItems;
   };
 
   const createNewItem = () => {
