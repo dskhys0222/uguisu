@@ -86,7 +86,6 @@ const load = async (editor: Editor, key: string) => {
   const content = await loadItem(key);
   editor
     .chain()
-    .focus()
     .setContent(content ?? "")
     .run();
 };
@@ -110,7 +109,6 @@ export default function RichTextEditor(props: RichTextEditorProps) {
 
   const editor = useEditor({
     extensions,
-    autofocus: true,
     onCreate: async ({ editor }) => {
       await load(editor, itemKey);
     },
