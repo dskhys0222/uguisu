@@ -149,4 +149,27 @@
         padding: 4px 0 4px 8px;
         border-left: 8px solid aliceblue;
     }
+
+    div:global(.tableWrapper) {
+        overflow-x: auto;
+
+        table {
+
+            th,
+            td {
+                border: 1px solid lightgrey;
+                min-width: 6rem;
+                padding: 0 0.5rem;
+
+                &:global(.selectedCell) {
+                    background-color: royalblue;
+                    color: white;
+                }
+            }
+
+            th {
+                background-color: ghostwhite;
+            }
+        }
+    }
 }

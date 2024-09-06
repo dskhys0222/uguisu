@@ -1,11 +1,14 @@
 import {
   BoldIcon,
+  CommandLineIcon,
   ItalicIcon,
   StrikethroughIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import MenuButton from "../MenuButton/MenuButton";
 import type { MenuBarProps } from "./types";
+import { TableCellsIcon } from "@heroicons/react/24/solid";
+import { findParentNodeClosestToPos } from "@tiptap/react";
 
 export default function MenuBar(props: MenuBarProps) {
   const { editor, onRemove, className } = props;
@@ -20,6 +23,29 @@ export default function MenuBar(props: MenuBarProps) {
 
   const toggleStrike = () => {
     editor?.chain().focus().toggleStrike().run();
+  };
+
+  const insertTable = () => {
+    const isFocusedTable =
+      editor != null &&
+      !!findParentNodeClosestToPos(
+        editor?.state.selection.$anchor,
+        (node) => node.type.name === "table",
+      );
+
+    if (isFocusedTable) {
+      return;
+    }
+
+    editor
+      ?.chain()
+      .focus()
+      .insertTable({ rows: 3, cols: 2, withHeaderRow: true })
+      .run();
+  };
+
+  const test = () => {
+    editor?.chain().focus().createParagraphNear().run();
   };
 
   const remove = () => {
@@ -38,8 +64,14 @@ export default function MenuBar(props: MenuBarProps) {
         <MenuButton onClick={toggleStrike}>
           <StrikethroughIcon className="size-6 text-gray-600" />
         </MenuButton>
+        <MenuButton onClick={insertTable}>
+          <TableCellsIcon className="size-6 text-gray-600" />
+        </MenuButton>
       </div>
       <div className="flex">
+        <MenuButton onClick={test}>
+          <CommandLineIcon className="size-6 text-gray-600" />
+        </MenuButton>
         <MenuButton onClick={remove}>
           <TrashIcon className="size-6 text-gray-600" />
         </MenuButton>

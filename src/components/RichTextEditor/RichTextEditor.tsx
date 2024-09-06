@@ -35,6 +35,7 @@ import MenuBar from "../MenuBar/MenuBar";
 import styles from "./styles.module.scss";
 import type { RichTextEditorProps } from "./types";
 import useDebounce from "@/hooks/useDebounce";
+import { TableKeymap } from "@/utils/tiptapExtensions/tableKeymap";
 
 const grammers = {
   ...common,
@@ -67,7 +68,7 @@ const extensions = [
   TaskItem.configure({ nested: true }),
   CodeBlockLowlight.configure({ lowlight }),
   Blockquote,
-  Table,
+  Table.configure({ resizable: true }),
   TableRow,
   TableHeader,
   TableCell,
@@ -78,6 +79,7 @@ const extensions = [
   Code,
   ListKeymap,
   History,
+  TableKeymap,
 ];
 
 const load = async (editor: Editor, key: string) => {
