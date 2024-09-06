@@ -1,6 +1,6 @@
 import { Extension } from "@tiptap/core";
 import { CellSelection } from "@tiptap/pm/tables";
-import { findParentNodeClosestToPos, type Editor } from "@tiptap/react";
+import { type Editor, findParentNodeClosestToPos } from "@tiptap/react";
 
 const isCellSelection = (value: unknown): value is CellSelection => {
   return value instanceof CellSelection;

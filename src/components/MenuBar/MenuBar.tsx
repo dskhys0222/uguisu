@@ -5,10 +5,10 @@ import {
   StrikethroughIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
-import MenuButton from "../MenuButton/MenuButton";
-import type { MenuBarProps } from "./types";
 import { TableCellsIcon } from "@heroicons/react/24/solid";
 import { findParentNodeClosestToPos } from "@tiptap/react";
+import MenuButton from "../MenuButton/MenuButton";
+import type { MenuBarProps } from "./types";
 
 export default function MenuBar(props: MenuBarProps) {
   const { editor, onRemove, className } = props;

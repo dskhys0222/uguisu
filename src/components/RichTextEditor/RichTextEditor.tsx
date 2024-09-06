@@ -1,6 +1,8 @@
 "use client";
 
+import useDebounce from "@/hooks/useDebounce";
 import { loadItem, saveItem } from "@/utils/indexedDb";
+import { TableKeymap } from "@/utils/tiptapExtensions/tableKeymap";
 import Blockquote from "@tiptap/extension-blockquote";
 import Bold from "@tiptap/extension-bold";
 import BulletList from "@tiptap/extension-bullet-list";
@@ -34,8 +36,6 @@ import { useEffect, useState } from "react";
 import MenuBar from "../MenuBar/MenuBar";
 import styles from "./styles.module.scss";
 import type { RichTextEditorProps } from "./types";
-import useDebounce from "@/hooks/useDebounce";
-import { TableKeymap } from "@/utils/tiptapExtensions/tableKeymap";
 
 const grammers = {
   ...common,
