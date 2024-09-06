@@ -8,7 +8,7 @@ export default function ItemList(props: ItemListProps) {
       {items.map((item) => (
         <li
           key={item.key}
-          className="cursor-pointer truncate border-b p-3 hover:bg-gray-100"
+          className={`cursor-pointer truncate border-b p-3 hover:bg-gray-100 ${item.title === "" ? "text-gray-400 italic" : ""}`}
           onClick={() => {
             onSelect?.(item.key);
           }}
@@ -18,7 +18,7 @@ export default function ItemList(props: ItemListProps) {
             }
           }}
         >
-          {item.title}
+          {item.title || "Untitled"}
         </li>
       ))}
     </ol>
