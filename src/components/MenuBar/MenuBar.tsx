@@ -1,3 +1,4 @@
+import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import {
   ArchiveBoxXMarkIcon,
   BoldIcon,
@@ -9,6 +10,7 @@ import {
 import { TableCellsIcon } from "@heroicons/react/24/solid";
 import { findParentNodeClosestToPos } from "@tiptap/react";
 import MenuButton from "../MenuButton/MenuButton";
+import MenuDropdown from "../MenuDropdown/MenuDropdown";
 import type { MenuBarProps } from "./types";
 
 export default function MenuBar(props: MenuBarProps) {
@@ -26,15 +28,28 @@ export default function MenuBar(props: MenuBarProps) {
     editor?.chain().focus().toggleStrike().run();
   };
 
-  const insertTable = () => {
-    const isFocusedTable =
+  const isFocusedTable = () => {
+    return (
       editor != null &&
       !!findParentNodeClosestToPos(
         editor?.state.selection.$anchor,
         (node) => node.type.name === "table",
-      );
+      )
+    );
+  };
 
-    if (isFocusedTable) {
+  const isFocusedHeaderRow = () => {
+    return (
+      editor != null &&
+      !!findParentNodeClosestToPos(
+        editor?.state.selection.$anchor,
+        (node) => node.type.name === "tableHeader",
+      )
+    );
+  };
+
+  const insertTable = () => {
+    if (isFocusedTable()) {
       return;
     }
 
@@ -45,8 +60,64 @@ export default function MenuBar(props: MenuBarProps) {
       .run();
   };
 
+  const deleteTable = () => {
+    if (!isFocusedTable()) {
+      return;
+    }
+
+    editor?.chain().focus().deleteTable().run();
+  };
+
+  const addRowBefore = () => {
+    if (!isFocusedTable() || isFocusedHeaderRow()) {
+      return;
+    }
+
+    editor?.chain().focus().addRowBefore().run();
+  };
+
+  const addRowAfter = () => {
+    if (!isFocusedTable()) {
+      return;
+    }
+
+    editor?.chain().focus().addRowAfter().run();
+  };
+
+  const deleteRow = () => {
+    if (!isFocusedTable() || isFocusedHeaderRow()) {
+      return;
+    }
+
+    editor?.chain().focus().deleteRow().run();
+  };
+
+  const addColumnBefore = () => {
+    if (!isFocusedTable()) {
+      return;
+    }
+
+    editor?.chain().focus().addColumnBefore().run();
+  };
+
+  const addColumnAfter = () => {
+    if (!isFocusedTable()) {
+      return;
+    }
+
+    editor?.chain().focus().addColumnAfter().run();
+  };
+
+  const deleteColumn = () => {
+    if (!isFocusedTable()) {
+      return;
+    }
+
+    editor?.chain().focus().deleteColumn().run();
+  };
+
   const test = () => {
-    editor?.chain().focus().createParagraphNear().run();
+    console.debug("test", editor?.state.selection);
   };
 
   const create = () => {
@@ -69,9 +140,60 @@ export default function MenuBar(props: MenuBarProps) {
         <MenuButton onClick={toggleStrike}>
           <StrikethroughIcon className="size-6 text-gray-600" />
         </MenuButton>
-        <MenuButton onClick={insertTable}>
-          <TableCellsIcon className="size-6 text-gray-600" />
-        </MenuButton>
+        <MenuDropdown
+          triggerElement={
+            <>
+              <TableCellsIcon className="size-6 text-gray-600" />
+              <ChevronDownIcon className="size-4 text-gray-600" />
+            </>
+          }
+          contents={[
+            {
+              type: "item",
+              content: { labelElement: "Insert Table", onClick: insertTable },
+            },
+            { type: "separator", content: undefined },
+            {
+              type: "item",
+              content: {
+                labelElement: "Add Column Before",
+                onClick: addColumnBefore,
+              },
+            },
+            {
+              type: "item",
+              content: {
+                labelElement: "Add Column After",
+                onClick: addColumnAfter,
+              },
+            },
+            {
+              type: "item",
+              content: {
+                labelElement: "Add Row Before",
+                onClick: addRowBefore,
+              },
+            },
+            {
+              type: "item",
+              content: { labelElement: "Add Row After", onClick: addRowAfter },
+            },
+            { type: "separator", content: undefined },
+            {
+              type: "item",
+              content: { labelElement: "Delete Column", onClick: deleteColumn },
+            },
+            {
+              type: "item",
+              content: { labelElement: "Delete Row", onClick: deleteRow },
+            },
+            { type: "separator", content: undefined },
+            {
+              type: "item",
+              content: { labelElement: "Delete Table", onClick: deleteTable },
+            },
+          ]}
+        />
       </div>
       <div className="flex">
         <MenuButton onClick={test}>
