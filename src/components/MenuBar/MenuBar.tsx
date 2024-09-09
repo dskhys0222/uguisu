@@ -1,9 +1,10 @@
 import {
+  ArchiveBoxXMarkIcon,
   BoldIcon,
   CommandLineIcon,
+  DocumentPlusIcon,
   ItalicIcon,
   StrikethroughIcon,
-  TrashIcon,
 } from "@heroicons/react/24/outline";
 import { TableCellsIcon } from "@heroicons/react/24/solid";
 import { findParentNodeClosestToPos } from "@tiptap/react";
@@ -11,7 +12,7 @@ import MenuButton from "../MenuButton/MenuButton";
 import type { MenuBarProps } from "./types";
 
 export default function MenuBar(props: MenuBarProps) {
-  const { editor, onRemove, className } = props;
+  const { editor, onCreate, onRemove, className } = props;
 
   const toggleBold = () => {
     editor?.chain().focus().toggleBold().run();
@@ -48,6 +49,10 @@ export default function MenuBar(props: MenuBarProps) {
     editor?.chain().focus().createParagraphNear().run();
   };
 
+  const create = () => {
+    onCreate?.();
+  };
+
   const remove = () => {
     onRemove?.();
   };
@@ -72,8 +77,11 @@ export default function MenuBar(props: MenuBarProps) {
         <MenuButton onClick={test}>
           <CommandLineIcon className="size-6 text-gray-600" />
         </MenuButton>
+        <MenuButton onClick={create}>
+          <DocumentPlusIcon className="size-6 text-gray-600" />
+        </MenuButton>
         <MenuButton onClick={remove}>
-          <TrashIcon className="size-6 text-gray-600" />
+          <ArchiveBoxXMarkIcon className="size-6 text-gray-600" />
         </MenuButton>
       </div>
     </div>

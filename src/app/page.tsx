@@ -1,6 +1,5 @@
 "use client";
 
-import FloatingButton from "@/components/FloatingButton/FloatingButton";
 import ItemList from "@/components/ItemList/ItemList";
 import RichTextEditor from "@/components/RichTextEditor/RichTextEditor";
 import type { ItemSummary } from "@/types";
@@ -37,6 +36,10 @@ export default function Home() {
     }
   };
 
+  const onCreate = () => {
+    createNewItem();
+  };
+
   const onRemove = async () => {
     await moveToTrash(selectedItemKey);
     const items = await reloadItems();
@@ -56,10 +59,10 @@ export default function Home() {
         <RichTextEditor
           itemKey={selectedItemKey}
           onChange={reloadItems}
+          onCreate={onCreate}
           onRemove={onRemove}
         />
       </main>
-      <FloatingButton onClick={createNewItem}>+</FloatingButton>
     </div>
   );
 }

@@ -91,7 +91,7 @@ const load = async (editor: Editor, key: string) => {
 };
 
 export default function RichTextEditor(props: RichTextEditorProps) {
-  const { itemKey, onChange, onRemove } = props;
+  const { itemKey, onChange, onCreate, onRemove } = props;
 
   const [content, setContent] = useState<JSONContent>();
   useDebounce(
@@ -127,7 +127,12 @@ export default function RichTextEditor(props: RichTextEditorProps) {
 
   return (
     <div className={`${styles.container} h-full`}>
-      <MenuBar className="h-12" editor={editor} onRemove={onRemove} />
+      <MenuBar
+        className="h-12"
+        editor={editor}
+        onCreate={onCreate}
+        onRemove={onRemove}
+      />
       <EditorContent
         className="h-[calc(100%-3rem)] overflow-y-auto p-8 [scrollbar-gutter:stable_both-edges] hover:cursor-text [&>[contenteditable=true]:focus-visible]:outline-none"
         editor={editor}
