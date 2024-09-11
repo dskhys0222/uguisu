@@ -1,3 +1,4 @@
+import { assetNever } from "@/utils/asssertion";
 import {
   Content,
   Item,
@@ -7,7 +8,6 @@ import {
   Trigger,
 } from "@radix-ui/react-dropdown-menu";
 import type { MenuDropdownProps } from "./types";
-import { assetNever } from "@/utils/asssertion";
 
 export default function MenuDropdown(props: MenuDropdownProps) {
   const { triggerElement, contents } = props;
