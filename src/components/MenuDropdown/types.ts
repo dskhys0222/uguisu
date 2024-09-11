@@ -1,6 +1,10 @@
 export interface MenuDropdownProps {
   triggerElement: React.ReactNode;
-  contents: (Content<"item"> | Content<"separator">)[];
+  contents: {
+    [K in keyof ContentTypes]: ContentTypes[K] extends undefined
+      ? Omit<Content<K>, "content">
+      : Content<K>;
+  }[keyof ContentTypes][];
 }
 
 export interface ContentTypes {

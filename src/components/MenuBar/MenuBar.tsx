@@ -152,7 +152,7 @@ export default function MenuBar(props: MenuBarProps) {
               type: "item",
               content: { labelElement: "Insert Table", onClick: insertTable },
             },
-            { type: "separator", content: undefined },
+            { type: "separator" },
             {
               type: "item",
               content: {
@@ -178,7 +178,7 @@ export default function MenuBar(props: MenuBarProps) {
               type: "item",
               content: { labelElement: "Add Row After", onClick: addRowAfter },
             },
-            { type: "separator", content: undefined },
+            { type: "separator" },
             {
               type: "item",
               content: { labelElement: "Delete Column", onClick: deleteColumn },
@@ -187,7 +187,7 @@ export default function MenuBar(props: MenuBarProps) {
               type: "item",
               content: { labelElement: "Delete Row", onClick: deleteRow },
             },
-            { type: "separator", content: undefined },
+            { type: "separator" },
             {
               type: "item",
               content: { labelElement: "Delete Table", onClick: deleteTable },

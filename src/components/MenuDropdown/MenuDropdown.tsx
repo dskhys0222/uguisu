@@ -22,17 +22,17 @@ export default function MenuDropdown(props: MenuDropdownProps) {
       </Trigger>
       <Portal>
         <Content className="rounded border bg-white p-2">
-          {indexedContents.map(({ key, type, content }) =>
-            type === "item" ? (
+          {indexedContents.map((x) =>
+            x.type === "item" ? (
               <Item
-                key={key}
+                key={x.key}
                 className="cursor-default rounded px-3 py-1 text-gray-700 text-sm hover:bg-gray-100"
-                onClick={content.onClick}
+                onClick={x.content.onClick}
               >
-                {content.labelElement}
+                {x.content.labelElement}
               </Item>
             ) : (
-              <Separator key={key} className="my-1 h-[1px] bg-gray-200" />
+              <Separator key={x.key} className="my-1 h-[1px] bg-gray-200" />
             ),
           )}
         </Content>
