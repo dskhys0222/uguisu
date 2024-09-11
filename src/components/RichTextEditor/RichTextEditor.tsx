@@ -125,6 +125,12 @@ export default function RichTextEditor(props: RichTextEditorProps) {
     load(editor, itemKey);
   }, [editor, itemKey]);
 
+  const onClickEditor: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    if (e.target === e.currentTarget) {
+      editor?.commands.focus(Number.MAX_VALUE);
+    }
+  };
+
   return (
     <div className={`${styles.container} h-full`}>
       <MenuBar
@@ -136,7 +142,7 @@ export default function RichTextEditor(props: RichTextEditorProps) {
       <EditorContent
         className="h-[calc(100%-3rem)] overflow-y-auto p-8 [scrollbar-gutter:stable_both-edges] hover:cursor-text [&>[contenteditable=true]:focus-visible]:outline-none"
         editor={editor}
-        onClick={() => editor?.commands.focus()}
+        onClick={onClickEditor}
       />
     </div>
   );
