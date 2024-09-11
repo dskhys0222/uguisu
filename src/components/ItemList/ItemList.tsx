@@ -4,7 +4,7 @@ export default function ItemList(props: ItemListProps) {
   const { className, items, onSelect } = props;
 
   return (
-    <ol className={`${className}`}>
+    <ol className={`${className} h-full overflow-auto`}>
       {items.map((item) => (
         <li
           key={item.key}
