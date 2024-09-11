@@ -171,3 +171,42 @@ export const moveToTrash = async (key: string): Promise<void> => {
     db.close();
   }
 };
+
+export const exportItems = async () => {
+  const db = await open();
+  const transaction = db.transaction(activeStoreName, "readonly");
+
+  try {
+    const items = await getAll<Item>(transaction, activeStoreName);
+    const blob = new Blob([JSON.stringify(items)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "uguisu_export.json";
+    a.click();
+  } catch {
+    transaction.abort();
+  } finally {
+    db.close();
+  }
+};
+
+export const importItems = async (file: File) => {
+  const text = await file.text();
+  const items = JSON.parse(text) as Item[];
+  const db = await open();
+  const transaction = db.transaction(activeStoreName, "readwrite");
+
+  try {
+    for (const item of items) {
+      await put(transaction, activeStoreName, item);
+    }
+  } catch {
+    transaction.abort();
+    throw new Error("Failed to import items");
+  } finally {
+    db.close();
+  }
+};

@@ -1,6 +1,9 @@
+import { exportItems } from "@/utils/indexedDb";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import {
   ArchiveBoxXMarkIcon,
+  ArrowDownTrayIcon,
+  ArrowUpTrayIcon,
   BoldIcon,
   CommandLineIcon,
   DocumentPlusIcon,
@@ -9,12 +12,15 @@ import {
 } from "@heroicons/react/24/outline";
 import { TableCellsIcon } from "@heroicons/react/24/solid";
 import { findParentNodeClosestToPos } from "@tiptap/react";
+import { useRouter } from "next/navigation";
 import MenuButton from "../MenuButton/MenuButton";
 import MenuDropdown from "../MenuDropdown/MenuDropdown";
 import type { MenuBarProps } from "./types";
 
 export default function MenuBar(props: MenuBarProps) {
   const { editor, onCreate, onRemove, className } = props;
+
+  const router = useRouter();
 
   const toggleBold = () => {
     editor?.chain().focus().toggleBold().run();
@@ -198,6 +204,12 @@ export default function MenuBar(props: MenuBarProps) {
       <div className="flex">
         <MenuButton onClick={test}>
           <CommandLineIcon className="size-6 text-gray-600" />
+        </MenuButton>
+        <MenuButton onClick={exportItems}>
+          <ArrowDownTrayIcon className="size-6 text-gray-600" />
+        </MenuButton>
+        <MenuButton onClick={() => router.push("/import")}>
+          <ArrowUpTrayIcon className="size-6 text-gray-600" />
         </MenuButton>
         <MenuButton onClick={create}>
           <DocumentPlusIcon className="size-6 text-gray-600" />
