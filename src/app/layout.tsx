@@ -13,6 +13,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
+      <head>
+        <link rel="icon" href="/uguisu/favicon.ico" />
+        <link rel="manifest" href="/uguisu/manifest.webmanifest" />
+      </head>
       <body>{children}</body>
     </html>
   );
