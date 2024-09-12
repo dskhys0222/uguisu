@@ -7,7 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "Uguisu",
     description: "A WYSIWYG editor",
     // biome-ignore lint/style/useNamingConvention: 外部仕様のため
-    start_url: "/",
+    start_url: "/uguisu/",
+    scope: "/uguisu/",
     display: "standalone",
     lang: "ja",
     // biome-ignore lint/style/useNamingConvention: 外部仕様のため
