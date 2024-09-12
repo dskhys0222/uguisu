@@ -3,7 +3,12 @@
 import ItemList from "@/components/ItemList/ItemList";
 import RichTextEditor from "@/components/RichTextEditor/RichTextEditor";
 import type { ItemSummary } from "@/types";
-import { loadAllSummary, moveToTrash } from "@/utils/indexedDb";
+import {
+  addPin,
+  loadAllSummary,
+  moveToTrash,
+  removePin,
+} from "@/utils/indexedDb/indexedDb";
 import { generateUuid } from "@/utils/uuid";
 import { useEffect, useState } from "react";
 
@@ -20,8 +25,10 @@ export default function Home() {
     const sortedItems = items.sort(
       (a, b) => b.updatedAt.valueOf() - a.updatedAt.valueOf(),
     );
-    setItems(sortedItems);
-    return sortedItems;
+    const pinnedItems = sortedItems.filter((item) => item.isPinned);
+    const unpinnedItems = sortedItems.filter((item) => !item.isPinned);
+    setItems([...pinnedItems, ...unpinnedItems]);
+    return [...pinnedItems, ...unpinnedItems];
   };
 
   const createNewItem = () => {
@@ -50,10 +57,24 @@ export default function Home() {
     }
   };
 
+  const togglePin = async (key: string) => {
+    const isPinned = items.find((item) => item.key === key)?.isPinned;
+    if (isPinned) {
+      await removePin(key);
+    } else {
+      await addPin(key);
+    }
+    await reloadItems();
+  };
+
   return (
     <div className="flex h-screen">
-      <nav className="w-60 flex-shrink-0 border-r-2">
-        <ItemList items={items} onSelect={setSelectedItemKey} />
+      <nav className="w-96 flex-shrink-0 border-r-2">
+        <ItemList
+          items={items}
+          onSelect={setSelectedItemKey}
+          onTogglePinned={togglePin}
+        />
       </nav>
       <main className="h-full max-w-[calc(100%-15rem)] flex-grow">
         <RichTextEditor

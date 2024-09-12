@@ -1,11 +1,18 @@
-import type { Item, ItemSummary } from "@/types";
+import type { ItemSummary } from "@/types";
 import type { JSONContent } from "@tiptap/react";
-import { getTitle } from "./jsonContent";
+import { getTitle } from "../jsonContent";
+import type {
+  ActiveStoreRecord,
+  ExportData,
+  PinStoreRecord,
+  TrashStoreRecord,
+} from "./types";
 
 const dbName = "content_db";
-const dbVersion = 2;
+const dbVersion = 3;
 const activeStoreName = "content_store";
 const trashStoreName = "trash_store";
+const pinStoreName = "pin_store";
 
 const open = () => {
   return new Promise<IDBDatabase>((resolve, reject) => {
@@ -26,6 +33,9 @@ const open = () => {
       }
       if (e.oldVersion < 2) {
         db.createObjectStore(trashStoreName, { keyPath: "key" });
+      }
+      if (e.oldVersion < 3) {
+        db.createObjectStore(pinStoreName, { keyPath: "key" });
       }
     };
   });
@@ -70,12 +80,12 @@ const get = async <T>(
 const getAll = async <T>(
   transaction: IDBTransaction,
   storeName: string,
-): Promise<T[] | undefined> => {
+): Promise<T[]> => {
   const store = transaction.objectStore(storeName);
   const request = store.getAll();
   return new Promise((resolve, reject) => {
     request.onsuccess = () => {
-      resolve(request.result);
+      resolve(request.result ?? []);
     };
     request.onerror = () => {
       reject(request.error);
@@ -102,11 +112,19 @@ const remove = async (
 
 export const loadAllSummary = async (): Promise<ItemSummary[]> => {
   const db = await open();
-  const transaction = db.transaction(activeStoreName, "readonly");
+  const transaction = db.transaction(
+    [activeStoreName, pinStoreName],
+    "readonly",
+  );
 
   try {
-    const items = await getAll<Item>(transaction, activeStoreName);
-    const summaries = items?.map(({ content, ...summary }) => summary) ?? [];
+    const items = await getAll<ActiveStoreRecord>(transaction, activeStoreName);
+    const pinned = await getAll<PinStoreRecord>(transaction, pinStoreName);
+    const pinnedKeys = pinned.map((item) => item.key);
+    const summaries = items.map(({ content, ...summary }) => ({
+      ...summary,
+      isPinned: pinnedKeys.includes(summary.key),
+    }));
     return summaries;
   } catch {
     transaction.abort();
@@ -116,7 +134,7 @@ export const loadAllSummary = async (): Promise<ItemSummary[]> => {
   }
 };
 
-export const loadItem = async (
+export const loadContent = async (
   key: string,
 ): Promise<JSONContent | undefined> => {
   const db = await open();
@@ -132,13 +150,13 @@ export const loadItem = async (
   }
 };
 
-export const saveItem = async (
+export const saveContent = async (
   key: string,
   content: JSONContent,
 ): Promise<void> => {
   const db = await open();
   const transaction = db.transaction(activeStoreName, "readwrite");
-  const item: Item = {
+  const item: ActiveStoreRecord = {
     key,
     content,
     title: getTitle(content),
@@ -162,9 +180,16 @@ export const moveToTrash = async (key: string): Promise<void> => {
   );
 
   try {
-    const item = await get<Item>(transaction, activeStoreName, key);
+    const item = await get<ActiveStoreRecord>(
+      transaction,
+      activeStoreName,
+      key,
+    );
+    if (!item) {
+      throw new Error("Item not found");
+    }
     await remove(transaction, activeStoreName, key);
-    await put(transaction, trashStoreName, item);
+    await put<TrashStoreRecord>(transaction, trashStoreName, item);
   } catch {
     transaction.abort();
   } finally {
@@ -172,13 +197,48 @@ export const moveToTrash = async (key: string): Promise<void> => {
   }
 };
 
-export const exportItems = async () => {
+export const addPin = async (key: string): Promise<void> => {
   const db = await open();
-  const transaction = db.transaction(activeStoreName, "readonly");
+  const transaction = db.transaction(pinStoreName, "readwrite");
 
   try {
-    const items = await getAll<Item>(transaction, activeStoreName);
-    const blob = new Blob([JSON.stringify(items)], {
+    await put<PinStoreRecord>(transaction, pinStoreName, { key });
+  } catch (e) {
+    console.error(e);
+    transaction.abort();
+  } finally {
+    db.close();
+  }
+};
+
+export const removePin = async (key: string): Promise<void> => {
+  const db = await open();
+  const transaction = db.transaction(pinStoreName, "readwrite");
+
+  try {
+    await remove(transaction, pinStoreName, key);
+  } catch {
+    transaction.abort();
+  } finally {
+    db.close();
+  }
+};
+
+export const exportData = async () => {
+  const db = await open();
+  const transaction = db.transaction(
+    [activeStoreName, pinStoreName],
+    "readonly",
+  );
+
+  try {
+    const items = await getAll<ActiveStoreRecord>(transaction, activeStoreName);
+    const pinned = await getAll<PinStoreRecord>(transaction, pinStoreName);
+    const exportData: ExportData = {
+      active: items,
+      pin: pinned,
+    };
+    const blob = new Blob([JSON.stringify(exportData)], {
       type: "application/json",
     });
     const url = URL.createObjectURL(blob);
@@ -193,15 +253,21 @@ export const exportItems = async () => {
   }
 };
 
-export const importItems = async (file: File) => {
+export const importData = async (file: File) => {
   const text = await file.text();
-  const items = JSON.parse(text) as Item[];
+  const data = JSON.parse(text) as ExportData;
   const db = await open();
-  const transaction = db.transaction(activeStoreName, "readwrite");
+  const transaction = db.transaction(
+    [activeStoreName, pinStoreName],
+    "readwrite",
+  );
 
   try {
-    for (const item of items) {
+    for (const item of data.active) {
       await put(transaction, activeStoreName, item);
+    }
+    for (const item of data.pin) {
+      await put(transaction, pinStoreName, item);
     }
   } catch {
     transaction.abort();

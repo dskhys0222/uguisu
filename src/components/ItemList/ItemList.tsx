@@ -1,25 +1,24 @@
+import ItemListItem from "./ItemListItem/ItemListItem";
 import type { ItemListProps } from "./types";
 
 export default function ItemList(props: ItemListProps) {
-  const { className, items, onSelect } = props;
+  const { className, items, onSelect, onTogglePinned } = props;
 
   return (
     <ol className={`${className} h-full overflow-auto`}>
       {items.map((item) => (
-        <li
+        <ItemListItem
           key={item.key}
-          className={`cursor-pointer truncate border-b p-3 hover:bg-gray-100 ${item.title === "" ? "text-gray-400 italic" : ""}`}
+          itemKey={item.key}
+          title={item.title}
+          isPinned={item.isPinned}
           onClick={() => {
             onSelect?.(item.key);
           }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              onSelect?.(item.key);
-            }
+          onTogglePinned={(key) => {
+            onTogglePinned?.(key);
           }}
-        >
-          {item.title || "Untitled"}
-        </li>
+        />
       ))}
     </ol>
   );

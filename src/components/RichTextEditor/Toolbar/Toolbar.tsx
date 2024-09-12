@@ -1,4 +1,4 @@
-import { exportItems } from "@/utils/indexedDb";
+import { exportData } from "@/utils/indexedDb/indexedDb";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import {
   ArchiveBoxXMarkIcon,
@@ -206,7 +206,7 @@ export default function Toolbar(props: ToolbarProps) {
         <ToolbarButton onClick={test}>
           <CommandLineIcon className="size-6 text-gray-600" />
         </ToolbarButton>
-        <ToolbarButton onClick={exportItems}>
+        <ToolbarButton onClick={exportData}>
           <ArrowDownTrayIcon className="size-6 text-gray-600" />
         </ToolbarButton>
         <ToolbarButton onClick={() => router.push("/import")}>

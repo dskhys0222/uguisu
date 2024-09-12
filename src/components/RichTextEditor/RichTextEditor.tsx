@@ -1,7 +1,7 @@
 "use client";
 
 import useDebounce from "@/hooks/useDebounce";
-import { loadItem, saveItem } from "@/utils/indexedDb";
+import { loadContent, saveContent } from "@/utils/indexedDb/indexedDb";
 import { TableKeymap } from "@/utils/tiptapExtensions/tableKeymap";
 import Blockquote from "@tiptap/extension-blockquote";
 import Bold from "@tiptap/extension-bold";
@@ -83,7 +83,7 @@ const extensions = [
 ];
 
 const load = async (editor: Editor, key: string) => {
-  const content = await loadItem(key);
+  const content = await loadContent(key);
   editor
     .chain()
     .setContent(content ?? "")
@@ -100,7 +100,7 @@ export default function RichTextEditor(props: RichTextEditorProps) {
         return;
       }
 
-      await saveItem(itemKey, content);
+      await saveContent(itemKey, content);
       onChange?.();
     },
     1000,

@@ -1,6 +1,6 @@
 "use client";
 
-import { importItems } from "@/utils/indexedDb";
+import { importData } from "@/utils/indexedDb/indexedDb";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -14,7 +14,7 @@ export default function ImportPage() {
     }
 
     try {
-      await importItems(file);
+      await importData(file);
       alert("Imported successfully");
     } catch {
       alert("Failed to import");
