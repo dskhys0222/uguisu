@@ -33,7 +33,7 @@ import {
 } from "@tiptap/react";
 import { common, createLowlight } from "lowlight";
 import { useEffect, useState } from "react";
-import Toolbar from "../Toolbar/Toolbar";
+import Toolbar from "./Toolbar/Toolbar";
 import styles from "./styles.module.scss";
 import type { RichTextEditorProps } from "./types";
 
