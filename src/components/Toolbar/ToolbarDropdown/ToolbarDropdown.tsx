@@ -7,9 +7,10 @@ import {
   Separator,
   Trigger,
 } from "@radix-ui/react-dropdown-menu";
-import type { MenuDropdownProps } from "./types";
+import { Button } from "@radix-ui/react-toolbar";
+import type { ToolbarDropdownProps } from "./types";
 
-export default function MenuDropdown(props: MenuDropdownProps) {
+export default function ToolbarDropdown(props: ToolbarDropdownProps) {
   const { triggerElement, contents } = props;
   const indexedContents = contents.map((content, index) => ({
     ...content,
@@ -18,9 +19,11 @@ export default function MenuDropdown(props: MenuDropdownProps) {
 
   return (
     <Root>
-      <Trigger className="flex h-full min-w-10 items-center justify-center px-2 hover:bg-gray-100">
-        {triggerElement}
-      </Trigger>
+      <Button asChild={true}>
+        <Trigger className="flex h-full min-w-10 items-center justify-center px-2 hover:bg-gray-100">
+          {triggerElement}
+        </Trigger>
+      </Button>
       <Portal>
         <Content className="rounded border bg-white p-2">
           {indexedContents.map((x) => {

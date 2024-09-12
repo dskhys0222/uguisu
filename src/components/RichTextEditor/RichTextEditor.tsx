@@ -33,7 +33,7 @@ import {
 } from "@tiptap/react";
 import { common, createLowlight } from "lowlight";
 import { useEffect, useState } from "react";
-import MenuBar from "../MenuBar/MenuBar";
+import Toolbar from "../Toolbar/Toolbar";
 import styles from "./styles.module.scss";
 import type { RichTextEditorProps } from "./types";
 
@@ -133,7 +133,7 @@ export default function RichTextEditor(props: RichTextEditorProps) {
 
   return (
     <div className={`${styles.container} h-full`}>
-      <MenuBar
+      <Toolbar
         className="h-12"
         editor={editor}
         onCreate={onCreate}

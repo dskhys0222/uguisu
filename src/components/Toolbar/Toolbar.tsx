@@ -11,13 +11,14 @@ import {
   StrikethroughIcon,
 } from "@heroicons/react/24/outline";
 import { TableCellsIcon } from "@heroicons/react/24/solid";
+import { Root } from "@radix-ui/react-toolbar";
 import { findParentNodeClosestToPos } from "@tiptap/react";
 import { useRouter } from "next/navigation";
-import MenuButton from "../MenuButton/MenuButton";
-import MenuDropdown from "../MenuDropdown/MenuDropdown";
-import type { MenuBarProps } from "./types";
+import ToolbarButton from "./ToolbarButton/ToolbarButton";
+import ToolbarDropdown from "./ToolbarDropdown/ToolbarDropdown";
+import type { ToolbarProps } from "./types";
 
-export default function MenuBar(props: MenuBarProps) {
+export default function Toolbar(props: ToolbarProps) {
   const { editor, onCreate, onRemove, className } = props;
 
   const router = useRouter();
@@ -135,18 +136,18 @@ export default function MenuBar(props: MenuBarProps) {
   };
 
   return (
-    <div className={`flex justify-between border-b-2 ${className}`}>
+    <Root className={`flex justify-between border-b-2 ${className}`}>
       <div className="flex">
-        <MenuButton onClick={toggleBold}>
+        <ToolbarButton onClick={toggleBold}>
           <BoldIcon className="size-6 text-gray-600" />
-        </MenuButton>
-        <MenuButton onClick={toggleItalic}>
+        </ToolbarButton>
+        <ToolbarButton onClick={toggleItalic}>
           <ItalicIcon className="size-6 text-gray-600" />
-        </MenuButton>
-        <MenuButton onClick={toggleStrike}>
+        </ToolbarButton>
+        <ToolbarButton onClick={toggleStrike}>
           <StrikethroughIcon className="size-6 text-gray-600" />
-        </MenuButton>
-        <MenuDropdown
+        </ToolbarButton>
+        <ToolbarDropdown
           triggerElement={
             <>
               <TableCellsIcon className="size-6 text-gray-600" />
@@ -202,22 +203,22 @@ export default function MenuBar(props: MenuBarProps) {
         />
       </div>
       <div className="flex">
-        <MenuButton onClick={test}>
+        <ToolbarButton onClick={test}>
           <CommandLineIcon className="size-6 text-gray-600" />
-        </MenuButton>
-        <MenuButton onClick={exportItems}>
+        </ToolbarButton>
+        <ToolbarButton onClick={exportItems}>
           <ArrowDownTrayIcon className="size-6 text-gray-600" />
-        </MenuButton>
-        <MenuButton onClick={() => router.push("/import")}>
+        </ToolbarButton>
+        <ToolbarButton onClick={() => router.push("/import")}>
           <ArrowUpTrayIcon className="size-6 text-gray-600" />
-        </MenuButton>
-        <MenuButton onClick={create}>
+        </ToolbarButton>
+        <ToolbarButton onClick={create}>
           <DocumentPlusIcon className="size-6 text-gray-600" />
-        </MenuButton>
-        <MenuButton onClick={remove}>
+        </ToolbarButton>
+        <ToolbarButton onClick={remove}>
           <ArchiveBoxXMarkIcon className="size-6 text-gray-600" />
-        </MenuButton>
+        </ToolbarButton>
       </div>
-    </div>
+    </Root>
   );
 }

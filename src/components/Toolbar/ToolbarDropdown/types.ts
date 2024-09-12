@@ -1,4 +1,4 @@
-export interface MenuDropdownProps {
+export interface ToolbarDropdownProps {
   triggerElement: React.ReactNode;
   contents: {
     [K in keyof ContentTypes]: ContentTypes[K] extends undefined

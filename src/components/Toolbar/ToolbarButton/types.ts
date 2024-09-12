@@ -1,4 +1,4 @@
-export interface MenuButtonProps {
+export interface ToolbarButtonProps {
   children: React.ReactNode;
   onClick?: () => void;
 }
