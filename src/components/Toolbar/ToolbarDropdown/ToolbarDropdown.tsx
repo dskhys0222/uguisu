@@ -1,4 +1,4 @@
-import { assetNever } from "@/utils/asssertion";
+import { assertNever } from "@/utils/asssertion";
 import {
   Content,
   Item,
@@ -43,7 +43,7 @@ export default function ToolbarDropdown(props: ToolbarDropdownProps) {
                   <Separator key={x.key} className="my-1 h-[1px] bg-gray-200" />
                 );
               default:
-                assetNever(x);
+                assertNever(x);
             }
           })}
         </Content>
