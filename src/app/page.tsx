@@ -76,7 +76,7 @@ export default function Home() {
           onTogglePinned={togglePin}
         />
       </nav>
-      <main className="h-full max-w-[calc(100%-15rem)] flex-grow">
+      <main className="h-full flex-grow">
         <RichTextEditor
           itemKey={selectedItemKey}
           onChange={reloadItems}
