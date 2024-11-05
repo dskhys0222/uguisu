@@ -21,3 +21,11 @@ check lint and format
 ```bash
 npm run lint
 ```
+
+deploy
+
+```bash
+npm install
+npm run build
+npm run start
+```
