@@ -19,7 +19,8 @@ npm run dev
 
 check lint and format
 ```bash
-npm run lint
+npm run check # only check, not fix
+npm run fix   # check and fix
 ```
 
 deploy
