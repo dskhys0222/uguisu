@@ -2,6 +2,7 @@
 
 import ItemList from "@/components/ItemList/ItemList";
 import RichTextEditor from "@/components/RichTextEditor/RichTextEditor";
+import ToolbarButton from "@/components/RichTextEditor/Toolbar/ToolbarButton/ToolbarButton";
 import type { ItemSummary } from "@/types";
 import {
   addPin,
@@ -10,10 +11,13 @@ import {
   removePin,
 } from "@/utils/indexedDb/indexedDb";
 import { generateUuid } from "@/utils/uuid";
+import { Bars3Icon } from "@heroicons/react/24/outline";
+import { Root } from "@radix-ui/react-toolbar";
 import { useEffect, useState } from "react";
 
 export default function Home() {
   const [items, setItems] = useState<ItemSummary[]>([]);
+  const [isOpenList, setIsOpenList] = useState<boolean>(false);
   const [selectedItemKey, setSelectedItemKey] = useState<string>(generateUuid);
 
   useEffect(() => {
@@ -43,6 +47,11 @@ export default function Home() {
     }
   };
 
+  const onSelect = (key: string) => {
+    setSelectedItemKey(key);
+    closeList();
+  };
+
   const onCreate = () => {
     createNewItem();
   };
@@ -67,23 +76,47 @@ export default function Home() {
     await reloadItems();
   };
 
+  const toggleList = () => {
+    setIsOpenList(!isOpenList);
+  };
+
+  const closeList = () => {
+    setIsOpenList(false);
+  };
+
   return (
-    <div className="flex h-screen">
-      <nav className="w-96 flex-shrink-0 border-r-2">
-        <ItemList
-          items={items}
-          onSelect={setSelectedItemKey}
-          onTogglePinned={togglePin}
+    <div className="flex h-screen flex-col">
+      <div className="relative flex flex-grow overflow-x-auto">
+        <nav
+          className={`h-full w-96 flex-shrink-0 border-r-2 sm:block ${isOpenList ? "absolute z-20 bg-white" : "hidden"}`}
+        >
+          <ItemList
+            items={items}
+            onSelect={onSelect}
+            onTogglePinned={togglePin}
+          />
+        </nav>
+        <main className="h-full flex-grow">
+          <RichTextEditor
+            itemKey={selectedItemKey}
+            onChange={reloadItems}
+            onCreate={onCreate}
+            onRemove={onRemove}
+          />
+        </main>
+        <div
+          className={`h-full w-full ${isOpenList ? "absolute bg-gray-500 opacity-50" : "hidden"}`}
+          onClick={closeList}
+          onKeyDown={closeList}
         />
-      </nav>
-      <main className="h-full flex-grow">
-        <RichTextEditor
-          itemKey={selectedItemKey}
-          onChange={reloadItems}
-          onCreate={onCreate}
-          onRemove={onRemove}
-        />
-      </main>
+      </div>
+      <footer>
+        <Root className="flex h-12 justify-between border-t-2 sm:hidden">
+          <ToolbarButton onClick={toggleList}>
+            <Bars3Icon className="size-6 text-gray-600" />
+          </ToolbarButton>
+        </Root>
+      </footer>
     </div>
   );
 }
